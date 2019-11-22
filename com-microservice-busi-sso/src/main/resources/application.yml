@@ -1,0 +1,51 @@
+server:
+  port: 8001
+spring:
+  application:
+    name: sso
+  sleuth:
+    web:
+      client:
+        enabled: true
+    sampler:
+      probability: 1.0 # 将采样比例设置为 1.0，也就是全部都需要。默认是 0.1
+  zipkin:
+    base-url: http://zipkin-server:9411/ # 指定了 Zipkin 服务器的地址
+  h2:
+    console:
+      enabled: true
+      path: /console # 路径
+      settings:
+        web-allow-others: true
+        trace: true #是否可以远程web
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    open-in-view: true
+    hibernate:
+      ddl-auto: none
+    datasource:
+      driver-class-name: org.h2.Driver
+      platform: h2
+      username: sa
+      password:
+      schema: classpath:schema.sql
+      data: classpath:data.sql
+      initialization-mode: always
+#logstash日志收集地址，即logstash服务器地址
+logstash:
+  ip_port: 172.18.0.5:5000
+  
+logging:
+  all:
+    level: info
+  config: classpath:logback-spring.xml  
+  level:
+    root: INFO
+    org.hibernate: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery:8761/eureka/

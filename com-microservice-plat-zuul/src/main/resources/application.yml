@@ -1,0 +1,15 @@
+server:
+  port: 8050
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery:8761/eureka/
+#logstash日志收集地址，即logstash服务器地址
+logstash:
+  ip_port: 172.18.0.5:5000
+#日志保存级别
+logging:
+  all:
+    level: info
+  config: classpath:logback-spring.xml

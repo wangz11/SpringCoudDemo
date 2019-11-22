@@ -1,0 +1,64 @@
+version: "3.7"
+services:
+  nginx:
+    image: nginx:1.17.6
+    container_name: nginx
+    hostname: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - /opt/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+      - /opt/nginx/logs:/var/log/nginx
+    networks:
+      - app
+    
+  discovery:
+    image: sunline.rdp.dockerharbor.com/sunlinerdp/com-microservice-plat-eureka
+    container_name: eureka
+    hostname: discovery
+    ports:
+      - "8761:8761"
+    networks:
+      - app
+   
+  gateway:
+    image: sunline.rdp.dockerharbor.com/sunlinerdp/com-microservice-plat-zuul
+    container_name: zuul
+    hostname: gateway-zuul
+    ports:
+      - "8050:8050"
+    depends_on:
+      - discovery
+    networks:
+      - app
+      - elk
+      
+  sso:
+    hostname: sso
+    image: sunline.rdp.dockerharbor.com/sunlinerdp/com-microservice-busi-sso
+    container_name: sso
+    ports:
+      - "8001:8001"
+    depends_on:
+      - discovery
+    networks:
+      - app
+      - elk
+      
+  lttsv8:
+    hostname: lttsv8
+    image: sunline.rdp.dockerharbor.com/sunlinerdp/com-microservice-busi-lttsv8
+    container_name: lttsv8
+    depends_on:
+      - discovery
+    networks:
+      - app
+      - elk
+networks:
+  app:
+    name: app
+    driver: bridge 
+  elk:
+    driver: bridge 
+    external: true
+  
